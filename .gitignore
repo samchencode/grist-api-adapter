@@ -1,0 +1,67 @@
+# ================================
+# .NET build outputs
+# ================================
+bin/
+obj/
+
+# ================================
+# User-specific files
+# ================================
+*.user
+*.rsuser
+*.suo
+*.userosscache
+*.sln.docstates
+
+# ================================
+# NuGet
+# ================================
+packages/
+.nuget/
+packages.lock.json.bak
+
+# (Keep packages.lock.json if you intentionally use it)
+# packages.lock.json
+
+# ================================
+# VS Code
+# ================================
+.vscode/*
+!.vscode/settings.json
+!.vscode/launch.json
+!.vscode/tasks.json
+!.vscode/extensions.json
+
+# ================================
+# macOS
+# ================================
+.DS_Store
+.AppleDouble
+.LSOverride
+Icon?
+._*
+
+# ================================
+# Logs & temp
+# ================================
+*.log
+*.tmp
+*.temp
+*.swp
+
+# ================================
+# Rider / JetBrains (just in case)
+# ================================
+.idea/
+*.sln.iml
+
+# ================================
+# Coverage / test artifacts
+# ================================
+coverage/
+TestResults/
+
+# ================================
+# Publish output
+# ================================
+publish/

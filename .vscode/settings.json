@@ -1,0 +1,7 @@
+{
+    "[csharp]": {
+        "editor.defaultFormatter": "dotnetdev-kr-custom.csharp"
+    },
+    "editor.formatOnSave": true,
+    "dotnet.formatting.organizeImportsOnFormat": true,
+}
