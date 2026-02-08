@@ -33,6 +33,16 @@ class GristScimApi(HttpClient client)
         return CreateUserResponse.Parse(body)!;
     }
 
+    async public Task DeleteUser(string userId)
+    {
+        HttpResponseMessage resp = await client.DeleteAsync($"/api/scim/v2/Users/{userId}");
+        if (!resp.IsSuccessStatusCode)
+        {
+            string body = await resp.Content.ReadAsStringAsync();
+            throw new GristApiException(resp.StatusCode, body);
+        }
+    }
+
     public static class CreateUserRequest
     {
         public record Request(

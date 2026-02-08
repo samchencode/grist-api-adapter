@@ -29,5 +29,8 @@ class Program
         {
             Console.WriteLine(r.DisplayName);
         }
+
+        await api.Scim.DeleteUser(createResp.Id);
+        Console.WriteLine($"Deleted user: {createResp.Id}");
     }
 }
