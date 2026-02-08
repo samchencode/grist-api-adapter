@@ -1,0 +1,78 @@
+using GristApiAdapter.Core;
+
+namespace Core.Tests;
+
+public class GristScimApiTests
+{
+    private readonly GristApi api = TestFixture.CreateApi();
+
+    [Fact]
+    public async Task CreateUser_ReturnsCreatedUser()
+    {
+        var resp = await api.Scim.CreateUser(new GristScimApi.CreateUserRequest.Request(
+            UserName: "scimtest@example.com",
+            Name: new("SCIM Test User"),
+            Emails: [new("scimtest@example.com", true)],
+            DisplayName: "SCIM Test User",
+            PreferredLanguage: "en",
+            Locale: "en_US",
+            Photos: []
+        ));
+
+        try
+        {
+            Assert.Equal("scimtest@example.com", resp.UserName);
+            Assert.Equal("SCIM Test User", resp.DisplayName);
+            Assert.NotEmpty(resp.Id);
+        }
+        finally
+        {
+            await api.Scim.DeleteUser(resp.Id);
+        }
+    }
+
+    [Fact]
+    public async Task GetUsers_ReturnsUserList()
+    {
+        var createResp = await api.Scim.CreateUser(new GristScimApi.CreateUserRequest.Request(
+            UserName: "listtest@example.com",
+            Name: new("List Test User"),
+            Emails: [new("listtest@example.com", true)],
+            DisplayName: "List Test User",
+            PreferredLanguage: "en",
+            Locale: "en_US",
+            Photos: []
+        ));
+
+        try
+        {
+            var resp = await api.Scim.GetUsers();
+
+            Assert.NotEmpty(resp.Resources);
+            Assert.Contains(resp.Resources, r => r.UserName == "listtest@example.com");
+        }
+        finally
+        {
+            await api.Scim.DeleteUser(createResp.Id);
+        }
+    }
+
+    [Fact]
+    public async Task DeleteUser_RemovesUser()
+    {
+        var createResp = await api.Scim.CreateUser(new GristScimApi.CreateUserRequest.Request(
+            UserName: "deletetest@example.com",
+            Name: new("Delete Test User"),
+            Emails: [new("deletetest@example.com", true)],
+            DisplayName: "Delete Test User",
+            PreferredLanguage: "en",
+            Locale: "en_US",
+            Photos: []
+        ));
+
+        await api.Scim.DeleteUser(createResp.Id);
+
+        var resp = await api.Scim.GetUsers();
+        Assert.DoesNotContain(resp.Resources, r => r.UserName == "deletetest@example.com");
+    }
+}

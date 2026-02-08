@@ -4,4 +4,8 @@
     },
     "editor.formatOnSave": true,
     "dotnet.formatting.organizeImportsOnFormat": true,
+    "dotrush.roslyn.projectOrSolutionFiles": [
+        "/Volumes/jaunty/programming/GristApiAdapter/Core.Tests/Core.Tests.csproj",
+        "/Volumes/jaunty/programming/GristApiAdapter/GristApiAdapter.csproj"
+    ],
 }
