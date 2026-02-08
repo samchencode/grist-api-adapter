@@ -19,7 +19,7 @@ public class GristWorkspacesApiTests
             var ws = await api.Workspaces.CreateWorkspace(orgId.ToString(),
                 new GristWorkspacesApi.CreateWorkspaceRequest.Request("Test Workspace"));
 
-            Assert.True(ws.Id > 0);
+            Assert.True(ws > 0);
         }
         finally
         {
@@ -43,7 +43,7 @@ public class GristWorkspacesApiTests
             var workspaces = await api.Workspaces.ListWorkspaces(orgId.ToString());
 
             Assert.NotEmpty(workspaces);
-            Assert.Contains(workspaces, w => w.Id == ws.Id && w.Name == "Test WS List");
+            Assert.Contains(workspaces, w => w.Id == ws && w.Name == "Test WS List");
         }
         finally
         {
@@ -64,10 +64,10 @@ public class GristWorkspacesApiTests
             var ws = await api.Workspaces.CreateWorkspace(orgId.ToString(),
                 new GristWorkspacesApi.CreateWorkspaceRequest.Request("Test WS Delete"));
 
-            await api.Workspaces.DeleteWorkspace(ws.Id);
+            await api.Workspaces.DeleteWorkspace(ws);
 
             var workspaces = await api.Workspaces.ListWorkspaces(orgId.ToString());
-            Assert.DoesNotContain(workspaces, w => w.Id == ws.Id);
+            Assert.DoesNotContain(workspaces, w => w.Id == ws);
         }
         finally
         {
@@ -88,7 +88,7 @@ public class GristWorkspacesApiTests
             var ws = await api.Workspaces.CreateWorkspace(orgId.ToString(),
                 new GristWorkspacesApi.CreateWorkspaceRequest.Request("Test WS Access"));
 
-            var access = await api.Workspaces.GetWorkspaceAccess(ws.Id);
+            var access = await api.Workspaces.GetWorkspaceAccess(ws);
 
             Assert.NotEmpty(access.Users);
         }
@@ -126,11 +126,11 @@ public class GristWorkspacesApiTests
             var ws = await api.Workspaces.CreateWorkspace(orgId.ToString(),
                 new GristWorkspacesApi.CreateWorkspaceRequest.Request("Test WS UpdAccess"));
 
-            await api.Workspaces.UpdateWorkspaceAccess(ws.Id, new(new(
+            await api.Workspaces.UpdateWorkspaceAccess(ws, new(new(
                 new Dictionary<string, AccessRole?> { ["wsaccess@example.com"] = AccessRole.Editors }
             )));
 
-            var access = await api.Workspaces.GetWorkspaceAccess(ws.Id);
+            var access = await api.Workspaces.GetWorkspaceAccess(ws);
             Assert.Contains(access.Users, u => u.Email == "wsaccess@example.com" && u.Access == AccessRole.Editors);
         }
         finally

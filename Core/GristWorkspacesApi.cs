@@ -17,7 +17,7 @@ class GristWorkspacesApi(HttpClient client)
         return ListWorkspacesResponse.Parse(body)!;
     }
 
-    async public Task<CreateWorkspaceResponse.Response> CreateWorkspace(string orgId, CreateWorkspaceRequest.Request request)
+    async public Task<int> CreateWorkspace(string orgId, CreateWorkspaceRequest.Request request)
     {
         HttpResponseMessage resp = await client.PostAsJsonAsync($"/api/orgs/{orgId}/workspaces", request);
         string body = await resp.Content.ReadAsStringAsync();
@@ -25,7 +25,7 @@ class GristWorkspacesApi(HttpClient client)
         {
             throw new GristApiException(resp.StatusCode, body);
         }
-        return CreateWorkspaceResponse.Parse(body)!;
+        return int.Parse(body);
     }
 
     async public Task DeleteWorkspace(int workspaceId)
@@ -95,18 +95,6 @@ class GristWorkspacesApi(HttpClient client)
     {
         public record Request(
             [property: JsonPropertyName("name")] string Name
-        );
-    }
-
-    public static class CreateWorkspaceResponse
-    {
-        public static Response? Parse(string json)
-        {
-            return JsonSerializer.Deserialize<Response>(json);
-        }
-
-        public record Response(
-            [property: JsonPropertyName("id")] int Id
         );
     }
 
