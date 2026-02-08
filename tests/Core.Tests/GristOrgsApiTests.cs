@@ -134,4 +134,42 @@ public class GristOrgsApiTests
             await api.Orgs.DeleteOrg(orgId.ToString(), "Test Org Update Access");
         }
     }
+
+    [Fact]
+    public async Task UpdateOrgAccess_RevokeAccess()
+    {
+        long orgId = await api.Orgs.CreateOrg(new GristOrgsApi.CreateOrgRequest.Request(
+            Name: "Test Org Revoke Access",
+            Domain: "test-org-revoke-access"
+        ));
+
+        var userResp = await api.Scim.CreateUser(new GristScimApi.CreateUserRequest.Request(
+            UserName: "orgrevoke@example.com",
+            Name: new("Org Revoke User"),
+            Emails: [new("orgrevoke@example.com", true)],
+            DisplayName: "Org Revoke User",
+            PreferredLanguage: "en",
+            Locale: "en_US",
+            Photos: []
+        ));
+
+        try
+        {
+            await api.Orgs.UpdateOrgAccess(orgId.ToString(), new(new(
+                new Dictionary<string, AccessRole?> { ["orgrevoke@example.com"] = AccessRole.Editors }
+            )));
+
+            await api.Orgs.UpdateOrgAccess(orgId.ToString(), new(new(
+                new Dictionary<string, AccessRole?> { ["orgrevoke@example.com"] = null }
+            )));
+
+            var access = await api.Orgs.GetOrgAccess(orgId.ToString());
+            Assert.DoesNotContain(access.Users, u => u.Email == "orgrevoke@example.com");
+        }
+        finally
+        {
+            await api.Scim.DeleteUser(userResp.Id);
+            await api.Orgs.DeleteOrg(orgId.ToString(), "Test Org Revoke Access");
+        }
+    }
 }
