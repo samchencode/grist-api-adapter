@@ -33,6 +33,17 @@ public class GristScimApi(HttpClient client)
         return CreateUserResponse.Parse(body)!;
     }
 
+    async public Task<GetUserResponse.Response> GetUser(string userId)
+    {
+        HttpResponseMessage resp = await client.GetAsync($"/api/scim/v2/Users/{userId}");
+        string body = await resp.Content.ReadAsStringAsync();
+        if (!resp.IsSuccessStatusCode)
+        {
+            throw new GristApiException(resp.StatusCode, body);
+        }
+        return GetUserResponse.Parse(body)!;
+    }
+
     async public Task DeleteUser(string userId)
     {
         HttpResponseMessage resp = await client.DeleteAsync($"/api/scim/v2/Users/{userId}");
@@ -123,6 +134,47 @@ public class GristScimApi(HttpClient client)
         );
 
 
+    }
+
+    public static class GetUserResponse
+    {
+        public static Response? Parse(string json)
+        {
+            return JsonSerializer.Deserialize<Response>(json);
+        }
+
+        public record Email(
+            [property: JsonPropertyName("value")] string Value,
+            [property: JsonPropertyName("primary")] bool Primary
+        );
+
+        public record Meta(
+            [property: JsonPropertyName("resourceType")] string ResourceType,
+            [property: JsonPropertyName("location")] string Location
+        );
+
+        public record Name(
+            [property: JsonPropertyName("formatted")] string Formatted
+        );
+
+        public record Photo(
+            [property: JsonPropertyName("value")] string Value,
+            [property: JsonPropertyName("primary")] bool Primary,
+            [property: JsonPropertyName("type")] string Type
+        );
+
+        public record Response(
+            [property: JsonPropertyName("meta")] Meta Meta,
+            [property: JsonPropertyName("id")] string Id,
+            [property: JsonPropertyName("schemas")] IReadOnlyList<string> Schemas,
+            [property: JsonPropertyName("userName")] string UserName,
+            [property: JsonPropertyName("name")] Name Name,
+            [property: JsonPropertyName("emails")] IReadOnlyList<Email> Emails,
+            [property: JsonPropertyName("displayName")] string DisplayName,
+            [property: JsonPropertyName("preferredLanguage")] string PreferredLanguage,
+            [property: JsonPropertyName("locale")] string Locale,
+            [property: JsonPropertyName("photos")] IReadOnlyList<Photo> Photos
+        );
     }
 
     public static class GetUsersResponse

@@ -58,6 +58,33 @@ public class GristScimApiTests
     }
 
     [Fact]
+    public async Task GetUser_ReturnsCorrectUser()
+    {
+        var createResp = await api.Scim.CreateUser(new GristScimApi.CreateUserRequest.Request(
+            UserName: "getuser@example.com",
+            Name: new("Get User Test"),
+            Emails: [new("getuser@example.com", true)],
+            DisplayName: "Get User Test",
+            PreferredLanguage: "en",
+            Locale: "en_US",
+            Photos: []
+        ));
+
+        try
+        {
+            var user = await api.Scim.GetUser(createResp.Id);
+
+            Assert.Equal(createResp.Id, user.Id);
+            Assert.Equal("getuser@example.com", user.UserName);
+            Assert.Equal("Get User Test", user.DisplayName);
+        }
+        finally
+        {
+            await api.Scim.DeleteUser(createResp.Id);
+        }
+    }
+
+    [Fact]
     public async Task DeleteUser_RemovesUser()
     {
         var createResp = await api.Scim.CreateUser(new GristScimApi.CreateUserRequest.Request(
