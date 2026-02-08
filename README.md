@@ -192,6 +192,23 @@ AccessRole.Members
 AccessRole.Guests
 ```
 
+To revoke a user's access, pass `null` instead of an `AccessRole`:
+
+```csharp
+await grist.Orgs.UpdateOrgAccess("42",
+    new GristOrgsApi.UpdateOrgAccessRequest.Request(
+        new GristOrgsApi.UpdateOrgAccessRequest.Delta(
+            new Dictionary<string, AccessRole?>
+            {
+                ["user-to-remove@example.com"] = null
+            }
+        )
+    )
+);
+```
+
+The same applies to workspace access via `UpdateWorkspaceAccess`.
+
 ### Error Handling
 
 All API methods throw `GristApiException` on failure:
