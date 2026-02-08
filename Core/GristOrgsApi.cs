@@ -1,3 +1,4 @@
+using System.Net.Http.Json;
 using System.Text.Json;
 using System.Text.Json.Serialization;
 
@@ -27,14 +28,87 @@ class GristOrgsApi(HttpClient client)
         return GetOrgResponse.Parse(body)!;
     }
 
-    async public Task DeleteOrg(string orgId)
+    async public Task<long> CreateOrg(CreateOrgRequest.Request request)
     {
-        HttpResponseMessage resp = await client.DeleteAsync($"/api/orgs/{orgId}");
+        HttpResponseMessage resp = await client.PostAsJsonAsync("/api/orgs", request);
+        string body = await resp.Content.ReadAsStringAsync();
+        if (!resp.IsSuccessStatusCode)
+        {
+            throw new GristApiException(resp.StatusCode, body);
+        }
+        return long.Parse(body);
+    }
+
+    async public Task DeleteOrg(string orgId, string name)
+    {
+        string escapedName = Uri.EscapeDataString(name);
+        HttpResponseMessage resp = await client.DeleteAsync($"/api/orgs/{orgId}/{escapedName}");
         if (!resp.IsSuccessStatusCode)
         {
             string body = await resp.Content.ReadAsStringAsync();
             throw new GristApiException(resp.StatusCode, body);
         }
+    }
+
+    async public Task<GetOrgAccessResponse.Response> GetOrgAccess(string orgId)
+    {
+        HttpResponseMessage resp = await client.GetAsync($"/api/orgs/{orgId}/access");
+        string body = await resp.Content.ReadAsStringAsync();
+        if (!resp.IsSuccessStatusCode)
+        {
+            throw new GristApiException(resp.StatusCode, body);
+        }
+        return GetOrgAccessResponse.Parse(body)!;
+    }
+
+    async public Task UpdateOrgAccess(string orgId, UpdateOrgAccessRequest.Request request)
+    {
+        HttpResponseMessage resp = await client.PatchAsync($"/api/orgs/{orgId}/access",
+            JsonContent.Create(request));
+        if (!resp.IsSuccessStatusCode)
+        {
+            string body = await resp.Content.ReadAsStringAsync();
+            throw new GristApiException(resp.StatusCode, body);
+        }
+    }
+
+    public static class CreateOrgRequest
+    {
+        public record Request(
+            [property: JsonPropertyName("name")] string Name,
+            [property: JsonPropertyName("domain")] string? Domain
+        );
+    }
+
+    public static class GetOrgAccessResponse
+    {
+        public static Response? Parse(string json)
+        {
+            return JsonSerializer.Deserialize<Response>(json);
+        }
+
+        public record Response(
+            [property: JsonPropertyName("users")] IReadOnlyList<User> Users
+        );
+
+        public record User(
+            [property: JsonPropertyName("id")] long Id,
+            [property: JsonPropertyName("name")] string Name,
+            [property: JsonPropertyName("email")] string Email,
+            [property: JsonPropertyName("access")] AccessRole Access,
+            [property: JsonPropertyName("isMember")] bool IsMember
+        );
+    }
+
+    public static class UpdateOrgAccessRequest
+    {
+        public record Request(
+            [property: JsonPropertyName("delta")] Delta Delta
+        );
+
+        public record Delta(
+            [property: JsonPropertyName("users")] Dictionary<string, AccessRole?> Users
+        );
     }
 
     public static class ListOrgsResponse
@@ -49,7 +123,7 @@ class GristOrgsApi(HttpClient client)
             [property: JsonPropertyName("name")] string Name,
             [property: JsonPropertyName("domain")] string? Domain,
             [property: JsonPropertyName("owner")] Owner? Owner,
-            [property: JsonPropertyName("access")] string Access,
+            [property: JsonPropertyName("access")] AccessRole Access,
             [property: JsonPropertyName("createdAt")] string CreatedAt,
             [property: JsonPropertyName("updatedAt")] string UpdatedAt
         );
@@ -73,7 +147,7 @@ class GristOrgsApi(HttpClient client)
             [property: JsonPropertyName("name")] string Name,
             [property: JsonPropertyName("domain")] string? Domain,
             [property: JsonPropertyName("owner")] Owner? Owner,
-            [property: JsonPropertyName("access")] string Access,
+            [property: JsonPropertyName("access")] AccessRole Access,
             [property: JsonPropertyName("createdAt")] string CreatedAt,
             [property: JsonPropertyName("updatedAt")] string UpdatedAt
         );

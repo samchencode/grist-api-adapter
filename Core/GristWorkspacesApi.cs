@@ -38,6 +38,59 @@ class GristWorkspacesApi(HttpClient client)
         }
     }
 
+    async public Task<GetWorkspaceAccessResponse.Response> GetWorkspaceAccess(int workspaceId)
+    {
+        HttpResponseMessage resp = await client.GetAsync($"/api/workspaces/{workspaceId}/access");
+        string body = await resp.Content.ReadAsStringAsync();
+        if (!resp.IsSuccessStatusCode)
+        {
+            throw new GristApiException(resp.StatusCode, body);
+        }
+        return GetWorkspaceAccessResponse.Parse(body)!;
+    }
+
+    async public Task UpdateWorkspaceAccess(int workspaceId, UpdateWorkspaceAccessRequest.Request request)
+    {
+        HttpResponseMessage resp = await client.PatchAsync($"/api/workspaces/{workspaceId}/access",
+            JsonContent.Create(request));
+        if (!resp.IsSuccessStatusCode)
+        {
+            string body = await resp.Content.ReadAsStringAsync();
+            throw new GristApiException(resp.StatusCode, body);
+        }
+    }
+
+    public static class GetWorkspaceAccessResponse
+    {
+        public static Response? Parse(string json)
+        {
+            return JsonSerializer.Deserialize<Response>(json);
+        }
+
+        public record Response(
+            [property: JsonPropertyName("users")] IReadOnlyList<User> Users
+        );
+
+        public record User(
+            [property: JsonPropertyName("id")] long Id,
+            [property: JsonPropertyName("name")] string Name,
+            [property: JsonPropertyName("email")] string Email,
+            [property: JsonPropertyName("access")] AccessRole Access,
+            [property: JsonPropertyName("isMember")] bool IsMember
+        );
+    }
+
+    public static class UpdateWorkspaceAccessRequest
+    {
+        public record Request(
+            [property: JsonPropertyName("delta")] Delta Delta
+        );
+
+        public record Delta(
+            [property: JsonPropertyName("users")] Dictionary<string, AccessRole?> Users
+        );
+    }
+
     public static class CreateWorkspaceRequest
     {
         public record Request(
@@ -67,7 +120,7 @@ class GristWorkspacesApi(HttpClient client)
         public record Workspace(
             [property: JsonPropertyName("id")] int Id,
             [property: JsonPropertyName("name")] string Name,
-            [property: JsonPropertyName("access")] string Access,
+            [property: JsonPropertyName("access")] AccessRole Access,
             [property: JsonPropertyName("docs")] IReadOnlyList<Doc> Docs,
             [property: JsonPropertyName("org")] Org Org
         );
@@ -75,7 +128,7 @@ class GristWorkspacesApi(HttpClient client)
         public record Doc(
             [property: JsonPropertyName("id")] string Id,
             [property: JsonPropertyName("name")] string Name,
-            [property: JsonPropertyName("access")] string Access,
+            [property: JsonPropertyName("access")] AccessRole Access,
             [property: JsonPropertyName("createdAt")] string CreatedAt,
             [property: JsonPropertyName("updatedAt")] string UpdatedAt,
             [property: JsonPropertyName("isPinned")] bool IsPinned

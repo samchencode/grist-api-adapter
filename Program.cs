@@ -21,17 +21,19 @@ class Program
         Console.WriteLine($"Created user: {createResp.Id} ({createResp.DisplayName})");
 
         var resp = await api.Scim.GetUsers();
-        if (resp is null)
-        {
-            throw new Exception("null response");
-        }
         foreach (var r in resp.Resources)
         {
-            Console.WriteLine(r.DisplayName);
+            Console.WriteLine($"User: {r.DisplayName} (id: {r.Id})");
         }
 
         await api.Scim.DeleteUser(createResp.Id);
         Console.WriteLine($"Deleted user: {createResp.Id}");
+
+        long demoOrgId = await api.Orgs.CreateOrg(new GristOrgsApi.CreateOrgRequest.Request(
+            Name: "Demo Org",
+            Domain: "demo-org"
+        ));
+        Console.WriteLine($"Created org: {demoOrgId}");
 
         var orgs = await api.Orgs.ListOrgs();
         foreach (var org in orgs)
@@ -43,5 +45,8 @@ class Program
                 Console.WriteLine($"  Workspace: {ws.Name} (id: {ws.Id})");
             }
         }
+
+        await api.Orgs.DeleteOrg(demoOrgId.ToString(), "Demo Org");
+        Console.WriteLine($"Deleted org: {demoOrgId}");
     }
 }
