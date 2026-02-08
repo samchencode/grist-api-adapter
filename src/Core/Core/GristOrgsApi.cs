@@ -30,6 +30,8 @@ public class GristOrgsApi(HttpClient client)
 
     async public Task<long> CreateOrg(CreateOrgRequest.Request request)
     {
+        // NOTE: although not documented, route exists
+        // https://community.getgrist.com/t/api-endpoint-missing-create-org/2854
         HttpResponseMessage resp = await client.PostAsJsonAsync("/api/orgs", request);
         string body = await resp.Content.ReadAsStringAsync();
         if (!resp.IsSuccessStatusCode)
