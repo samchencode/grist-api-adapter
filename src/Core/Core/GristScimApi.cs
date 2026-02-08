@@ -7,20 +7,23 @@ namespace GristApiAdapter.Core;
 
 public class GristScimApi(HttpClient client)
 {
-    async public Task<GetUsersResponse.Response> GetUsers(int? count = null, int? startIndex = null)
+    async public Task<ListUsersResponse.Response> ListUsers(int? count = null, int? startIndex = null)
     {
         var query = new List<string>();
-        if (count is not null) query.Add($"count={count}");
-        if (startIndex is not null) query.Add($"startIndex={startIndex}");
+        if (count is not null)
+            query.Add($"count={count}");
+        if (startIndex is not null)
+            query.Add($"startIndex={startIndex}");
         string uri = "/api/scim/v2/Users";
-        if (query.Count > 0) uri += "?" + string.Join("&", query);
+        if (query.Count > 0)
+            uri += "?" + string.Join("&", query);
         HttpResponseMessage resp = await client.GetAsync(uri);
         string body = await resp.Content.ReadAsStringAsync();
         if (!resp.IsSuccessStatusCode)
         {
             throw new GristApiException(resp.StatusCode, body);
         }
-        return GetUsersResponse.Parse(body)!;
+        return ListUsersResponse.Parse(body)!;
     }
 
     async public Task<CreateUserResponse.Response> CreateUser(CreateUserRequest.Request createUserRequest)
@@ -181,7 +184,7 @@ public class GristScimApi(HttpClient client)
         );
     }
 
-    public static class GetUsersResponse
+    public static class ListUsersResponse
     {
 
         public static Response? Parse(string json)

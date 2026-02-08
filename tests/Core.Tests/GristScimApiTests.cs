@@ -32,7 +32,7 @@ public class GristScimApiTests
     }
 
     [Fact]
-    public async Task GetUsers_ReturnsUserList()
+    public async Task ListUsers_ReturnsUserList()
     {
         var createResp = await api.Scim.CreateUser(new GristScimApi.CreateUserRequest.Request(
             UserName: "listtest@example.com",
@@ -46,7 +46,7 @@ public class GristScimApiTests
 
         try
         {
-            var resp = await api.Scim.GetUsers();
+            var resp = await api.Scim.ListUsers();
 
             Assert.NotEmpty(resp.Resources);
             Assert.Contains(resp.Resources, r => r.UserName == "listtest@example.com");
@@ -58,7 +58,7 @@ public class GristScimApiTests
     }
 
     [Fact]
-    public async Task GetUsers_WithCountAndStartIndex_ReturnsPage()
+    public async Task ListUsers_WithCountAndStartIndex_ReturnsPage()
     {
         var user1 = await api.Scim.CreateUser(new GristScimApi.CreateUserRequest.Request(
             UserName: "page1@example.com",
@@ -81,8 +81,8 @@ public class GristScimApiTests
 
         try
         {
-            var all = await api.Scim.GetUsers();
-            var page = await api.Scim.GetUsers(count: 1, startIndex: 1);
+            var all = await api.Scim.ListUsers();
+            var page = await api.Scim.ListUsers(count: 1, startIndex: 1);
 
             Assert.Single(page.Resources);
             Assert.True(all.TotalResults >= 2);
@@ -137,7 +137,7 @@ public class GristScimApiTests
 
         await api.Scim.DeleteUser(createResp.Id);
 
-        var resp = await api.Scim.GetUsers();
+        var resp = await api.Scim.ListUsers();
         Assert.DoesNotContain(resp.Resources, r => r.UserName == "deletetest@example.com");
     }
 }
