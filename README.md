@@ -158,6 +158,16 @@ foreach (var user in response.Resources)
 }
 ```
 
+Supports pagination via optional `count` and `startIndex` parameters:
+
+```csharp
+// Get first 100 users
+var page = await grist.Scim.GetUsers(count: 100);
+
+// Get users 21-40
+var page2 = await grist.Scim.GetUsers(count: 20, startIndex: 21);
+```
+
 #### Create a user
 
 ```csharp

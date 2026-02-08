@@ -7,9 +7,13 @@ namespace GristApiAdapter.Core;
 
 public class GristScimApi(HttpClient client)
 {
-    async public Task<GetUsersResponse.Response> GetUsers()
+    async public Task<GetUsersResponse.Response> GetUsers(int? count = null, int? startIndex = null)
     {
+        var query = new List<string>();
+        if (count is not null) query.Add($"count={count}");
+        if (startIndex is not null) query.Add($"startIndex={startIndex}");
         string uri = "/api/scim/v2/Users";
+        if (query.Count > 0) uri += "?" + string.Join("&", query);
         HttpResponseMessage resp = await client.GetAsync(uri);
         string body = await resp.Content.ReadAsStringAsync();
         if (!resp.IsSuccessStatusCode)

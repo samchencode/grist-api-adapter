@@ -58,6 +58,44 @@ public class GristScimApiTests
     }
 
     [Fact]
+    public async Task GetUsers_WithCountAndStartIndex_ReturnsPage()
+    {
+        var user1 = await api.Scim.CreateUser(new GristScimApi.CreateUserRequest.Request(
+            UserName: "page1@example.com",
+            Name: new("Page User 1"),
+            Emails: [new("page1@example.com", true)],
+            DisplayName: "Page User 1",
+            PreferredLanguage: "en",
+            Locale: "en_US",
+            Photos: []
+        ));
+        var user2 = await api.Scim.CreateUser(new GristScimApi.CreateUserRequest.Request(
+            UserName: "page2@example.com",
+            Name: new("Page User 2"),
+            Emails: [new("page2@example.com", true)],
+            DisplayName: "Page User 2",
+            PreferredLanguage: "en",
+            Locale: "en_US",
+            Photos: []
+        ));
+
+        try
+        {
+            var all = await api.Scim.GetUsers();
+            var page = await api.Scim.GetUsers(count: 1, startIndex: 1);
+
+            Assert.Single(page.Resources);
+            Assert.True(all.TotalResults >= 2);
+            Assert.Equal(all.TotalResults, page.TotalResults);
+        }
+        finally
+        {
+            await api.Scim.DeleteUser(user1.Id);
+            await api.Scim.DeleteUser(user2.Id);
+        }
+    }
+
+    [Fact]
     public async Task GetUser_ReturnsCorrectUser()
     {
         var createResp = await api.Scim.CreateUser(new GristScimApi.CreateUserRequest.Request(
