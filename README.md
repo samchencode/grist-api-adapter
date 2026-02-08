@@ -2,6 +2,8 @@
 
 A .NET client library for the [Grist](https://www.getgrist.com/) API.
 
+API reference: [REST API](https://support.getgrist.com/api/) | [OpenAPI spec](https://raw.githubusercontent.com/gristlabs/grist-help/master/api/grist.yml)
+
 ## Getting Started
 
 ### Prerequisites
@@ -172,6 +174,13 @@ var newUser = await grist.Scim.CreateUser(
 );
 
 Console.WriteLine($"Created user {newUser.Id}");
+```
+
+#### Get a user
+
+```csharp
+var user = await grist.Scim.GetUser("user-id");
+Console.WriteLine($"{user.DisplayName} ({user.UserName})");
 ```
 
 #### Delete a user
