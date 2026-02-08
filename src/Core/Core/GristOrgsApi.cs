@@ -4,7 +4,7 @@ using System.Text.Json.Serialization;
 
 namespace GristApiAdapter.Core;
 
-class GristOrgsApi(HttpClient client)
+public class GristOrgsApi(HttpClient client)
 {
     async public Task<IReadOnlyList<ListOrgsResponse.Org>> ListOrgs()
     {

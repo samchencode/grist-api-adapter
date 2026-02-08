@@ -5,7 +5,7 @@ using System.Text.Json.Serialization;
 
 namespace GristApiAdapter.Core;
 
-class GristScimApi(HttpClient client)
+public class GristScimApi(HttpClient client)
 {
     async public Task<GetUsersResponse.Response> GetUsers()
     {

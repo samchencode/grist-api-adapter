@@ -18,7 +18,7 @@
   </ItemGroup>
 
   <ItemGroup>
-    <ProjectReference Include="../GristApiAdapter.csproj" />
+    <ProjectReference Include="../../src/Core/GristApiAdapter.csproj" />
   </ItemGroup>
 
 </Project>

@@ -4,7 +4,7 @@ using System.Text.Json.Serialization;
 namespace GristApiAdapter.Core;
 
 [JsonConverter(typeof(AccessRoleConverter))]
-readonly record struct AccessRole
+public readonly record struct AccessRole
 {
     public static readonly AccessRole Owners = new("owners");
     public static readonly AccessRole Editors = new("editors");

@@ -4,7 +4,7 @@ using System.Text.Json.Serialization;
 
 namespace GristApiAdapter.Core;
 
-class GristApiException(HttpStatusCode statusCode, string responseBody) : Exception(ParseResponse(responseBody))
+public class GristApiException(HttpStatusCode statusCode, string responseBody) : Exception(ParseResponse(responseBody))
 {
     public HttpStatusCode StatusCode { get; } = statusCode;
 

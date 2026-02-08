@@ -2,7 +2,7 @@ using System.Net.Http.Headers;
 
 namespace GristApiAdapter.Core;
 
-class GristApi
+public class GristApi
 {
     public readonly GristScimApi Scim;
     public readonly GristOrgsApi Orgs;

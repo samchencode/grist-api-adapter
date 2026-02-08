@@ -4,7 +4,7 @@ using System.Text.Json.Serialization;
 
 namespace GristApiAdapter.Core;
 
-class GristWorkspacesApi(HttpClient client)
+public class GristWorkspacesApi(HttpClient client)
 {
     async public Task<IReadOnlyList<ListWorkspacesResponse.Workspace>> ListWorkspaces(string orgId)
     {

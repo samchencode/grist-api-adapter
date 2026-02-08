@@ -1,0 +1,36 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio Version 17
+VisualStudioVersion = 17.0.31903.59
+MinimumVisualStudioVersion = 10.0.40219.1
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "src", "src", "{6EB129F7-335D-4AD8-BD41-9E4C100D368A}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "GristApiAdapter", "src\Core\GristApiAdapter.csproj", "{BF9C6E09-2557-472E-9002-56CEB4692410}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "tests", "tests", "{F3E5F1F3-CD27-4BCC-B926-B18683146299}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Core.Tests", "tests\Core.Tests\Core.Tests.csproj", "{5B2799CC-9C1D-4DB7-AED2-B25F22B11FBE}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Release|Any CPU = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{BF9C6E09-2557-472E-9002-56CEB4692410}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{BF9C6E09-2557-472E-9002-56CEB4692410}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{BF9C6E09-2557-472E-9002-56CEB4692410}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{BF9C6E09-2557-472E-9002-56CEB4692410}.Release|Any CPU.Build.0 = Release|Any CPU
+		{5B2799CC-9C1D-4DB7-AED2-B25F22B11FBE}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{5B2799CC-9C1D-4DB7-AED2-B25F22B11FBE}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{5B2799CC-9C1D-4DB7-AED2-B25F22B11FBE}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{5B2799CC-9C1D-4DB7-AED2-B25F22B11FBE}.Release|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(NestedProjects) = preSolution
+		{BF9C6E09-2557-472E-9002-56CEB4692410} = {6EB129F7-335D-4AD8-BD41-9E4C100D368A}
+		{5B2799CC-9C1D-4DB7-AED2-B25F22B11FBE} = {F3E5F1F3-CD27-4BCC-B926-B18683146299}
+	EndGlobalSection
+EndGlobal
