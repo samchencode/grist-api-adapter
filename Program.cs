@@ -32,5 +32,16 @@ class Program
 
         await api.Scim.DeleteUser(createResp.Id);
         Console.WriteLine($"Deleted user: {createResp.Id}");
+
+        var orgs = await api.Orgs.ListOrgs();
+        foreach (var org in orgs)
+        {
+            Console.WriteLine($"Org: {org.Name} (id: {org.Id})");
+            var workspaces = await api.Workspaces.ListWorkspaces(org.Id.ToString());
+            foreach (var ws in workspaces)
+            {
+                Console.WriteLine($"  Workspace: {ws.Name} (id: {ws.Id})");
+            }
+        }
     }
 }

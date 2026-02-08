@@ -5,6 +5,8 @@ namespace GristApiAdapter.Core;
 class GristApi
 {
     public readonly GristScimApi Scim;
+    public readonly GristOrgsApi Orgs;
+    public readonly GristWorkspacesApi Workspaces;
     private readonly HttpClient client;
     public readonly string HostUrl;
 
@@ -13,6 +15,8 @@ class GristApi
         HostUrl = hostUrl;
         client = PrepareClient(hostUrl, accessToken);
         Scim = new GristScimApi(client);
+        Orgs = new GristOrgsApi(client);
+        Workspaces = new GristWorkspacesApi(client);
     }
 
     private static HttpClient PrepareClient(string hostUrl, string accessToken)
